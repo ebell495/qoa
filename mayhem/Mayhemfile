@@ -1,0 +1,6 @@
+project: qoa
+target: qoa-fuzz
+
+cmds:
+    - cmd: ./qoa-fuzz
+      libfuzzer: true
