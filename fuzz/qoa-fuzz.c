@@ -11,20 +11,27 @@ unsigned int get_uint(const uint8_t* in) {
 
 int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
     if (Size > 0) {
-        uint8_t op = Data[Size - 1];
+        uint8_t op = Data[0];
         qoa_desc desc;
         unsigned int len;
+        void* res = 0;
         switch (op) {
             case 0:
                 if (Size > 2) {
-                    desc.channels = Data[Size - 2];
-                    desc.samplerate = Data[Size - 3];
-                    desc.samples = Size / 2;
-                    qoa_encode(Data, &desc, &len);
+                    desc.channels = 1;
+                    desc.samplerate = 1;
+                    desc.samples = Size - 1;
+                    res = qoa_encode(Data + 1, &desc, &len);
+                    if (res) {
+                        free(res);
+                    }
                 }
                 break;
             case 1:
-                qoa_decode(Data, Size - 1, &desc);
+                res = qoa_decode(Data + 1, Size - 1, &desc);
+                if (res) {
+                    free(res);
+                }
                 break;
         }
     }    
